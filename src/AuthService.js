@@ -12,6 +12,7 @@ const AuthService = {
         const token = localStorage.getItem(TOKEN_KEY);
         if (token) {
             const decodedToken = jwtDecode(token);
+            console.log(decodedToken); 
             return decodedToken.userId; 
         }
         return null;
