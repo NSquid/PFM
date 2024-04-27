@@ -4,12 +4,9 @@ const mysql = require('mysql');
 
 const app = express();
 app.use(bodyParser.json());
-const path = require('path');
-
-app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'src', 'app.js'));
+    res.send('Hello, world!');
 });
 
 const db = mysql.createConnection({
@@ -27,26 +24,21 @@ db.connect((err) => {
     console.log('Connected to database');
 });
 
-app.post('/api/login', (req, res, next) => {
-    const { username, password } = req.body;
+app.post('/api/finance', (req, res) => {
+    const { type, amount } = req.body;
 
-    const query = 'SELECT * FROM users WHERE username = ?';
-    db.query(query, [username], (err, result) => {
-        if (err) return next(err);
-
-        if (result.length > 0 && password === result[0].password) {
-            res.json({ success: true });
-        } else {
-            res.json({ success: false });
+    const query = 'INSERT INTO History (Type, Amount, Date) VALUES (?, ?, CURDATE())';
+    db.query(query, [type, amount], (error, results) => {
+        if (error) {
+            console.error('Failed to insert data:', error);
+            res.status(500).json({ error: 'Failed to insert data' });
+            return;
         }
+
+        res.json({ success: true });
     });
 });
 
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-});
-
 app.listen(3000, () => {
-    console.log('Server running on port 3000');
+    console.log('Server is running on port 3000');
 });
