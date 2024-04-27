@@ -9,14 +9,69 @@ function Dashboard() {
     const [financeAmount, setFinanceAmount] = useState(0);
     const [content, setContent] = useState('dashboard');
     const [borderAmount, setBorderAmount] = useState(0);
+    const [description, setDescription] = useState('');
+    const [incomeHistory, setIncomeHistory] = useState([]);
+    const [outcomeHistory, setOutcomeHistory] = useState([]);
 
     const handleContentChange = (newContent) => {
         setContent(newContent);
     };
 
+    const fetchData = async () => {
+      const response = await fetch('/api/finance');
+      const data = await response.json();
+  
+      setIncome(data.income);
+      setOutcome(data.outcome);
+    };
+  
+    useEffect(() => {
+      fetchData();
+    }, []);
+
     useEffect(() => {
         setTotal(income - outcome);
     }, [income, outcome]);
+    
+    const fetchIncomeHistory = async () => {
+        try {
+            const response = await fetch('/api/finance/income');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const text = await response.text();
+            console.log(text);
+            const data = JSON.parse(text);
+            setIncomeHistory(data);
+        } catch (error) {
+            console.error('Failed to fetch income history:', error);
+        }
+    };
+
+    const fetchOutcomeHistory = async () => {
+        try {
+            const response = await fetch('/api/finance/outcome');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const text = await response.text();
+            console.log(text);
+            const data = JSON.parse(text);
+            setOutcomeHistory(data);
+        } catch (error) {
+            console.error('Failed to fetch outcome history:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchIncomeHistory();
+        fetchOutcomeHistory();
+    }, []);
+
+    useEffect(() => {
+        console.log(incomeHistory);
+        console.log(outcomeHistory);
+    }, [incomeHistory, outcomeHistory]);
 
     const handleSubmit = async (event) => {
     event.preventDefault();
@@ -31,6 +86,7 @@ function Dashboard() {
         body: JSON.stringify({
             type: financeType,
             amount: parsedAmount,
+            description: description,
         }),
     });
 
@@ -88,17 +144,57 @@ function Dashboard() {
                             <label><h2>Amount:</h2></label>
                             <input type="number" value={financeAmount} onChange={e => setFinanceAmount(e.target.value)} min="0" step="1" required className="form-control" />
                         </div>
+                        <div className="form-group">
+                            <label><h2>Description:</h2></label>
+                            <input type="text" value={description} onChange={e => setDescription(e.target.value)} required className="form-control" />
+                        </div>
                         <button type="submit" className="btn-add">Add</button>
                     </form>
                 </div>
             ) : content === 'incomeHistory' ? (
-                <div>
-                    <h1>testing 123456</h1>
-                </div>
+              <div style={{ width: '100%', fontSize: '20px' }}>
+                <h1>Income History</h1>
+                  <table style={{ width: '100%', fontSize: '20px' }}>
+                      <thead>
+                          <tr style={{fontSize: '30px'}}>
+                              <th>Date</th>
+                              <th>Amount</th>
+                              <th>Description</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        {incomeHistory.map((item, index) => (
+                            <tr key={index} style={{backgroundColor: index % 2 === 0 ? '#E3E3E3' : 'white', height: '50px'}}>
+                                <td style={{textAlign: 'center'}}>{new Date(item.Date).toLocaleDateString()}</td>
+                                <td style={{textAlign: 'center'}}>{item.Amount}</td>
+                                <td style={{textAlign: 'center'}}>{item.Description}</td>
+                            </tr>
+                        ))}
+                      </tbody>
+                  </table>
+              </div>
             ) : content === 'outcomeHistory' ? (
-                <div>
-                    <h1>Test</h1>
-                </div>
+              <div style={{ width: '100%', fontSize: '20px' }}>
+                <h1>Outcome History</h1>
+                  <table style={{ width: '100%', fontSize: '20px' }}>
+                      <thead>
+                          <tr style={{fontSize: '30px'}}>
+                              <th>Date</th>
+                              <th>Amount</th>
+                              <th>Description</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                        {outcomeHistory.map((item, index) => (
+                            <tr key={index} style={{backgroundColor: index % 2 === 0 ? '#E3E3E3' : 'white', height: '50px'}}>
+                                <td style={{textAlign: 'center'}}>{new Date(item.Date).toLocaleDateString()}</td>
+                                <td style={{textAlign: 'center'}}>{item.Amount}</td>
+                                <td style={{textAlign: 'center'}}>{item.Description}</td>
+                            </tr>
+                        ))}
+                      </tbody>
+                  </table>
+              </div>
             ) : (
                 <div>
                     {<div className="settings-form">
