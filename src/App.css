@@ -58,10 +58,10 @@ body{
 }
 
 .settings-form {
-  max-width: 600px; /* Adjust as needed */
-  margin: 0 auto; /* Center the form */
-  padding: 20px; /* Add some space around the form */
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  max-width: 600px; 
+  margin: 0 auto;
+  padding: 20px; 
+  box-sizing: border-box;
 }
 /*############# LOGIN STUFFS ############# */
 
@@ -123,19 +123,19 @@ body{
 }
 
 .btn-add {
-  background-color: #54d7ee; /* Change the background color */
-  color: white; /* Change the text color */
-  padding: 14px 20px; /* Change the padding */
-  margin: 8px 0; /* Change the margin */
-  border: none; /* Remove the border */
-  cursor: pointer; /* Change the cursor to a pointer when hovering over the button */
-  width: 100%; /* Make the button take up the full width of its parent */
-  font-size: 18px; /* Change the font size */
-  border-radius: 5px; /* Add rounded corners */
+  background-color: #54d7ee; 
+  color: white; 
+  padding: 14px 20px; 
+  margin: 8px 0; 
+  border: none; 
+  cursor: pointer;
+  width: 100%;
+  font-size: 18px; 
+  border-radius: 5px;
 }
 
 .btn-add:hover {
-  background-color: #3ea1b3; /* Change the background color when hovering over the button */
+  background-color: #3ea1b3; 
 }
 
 .button-nav {

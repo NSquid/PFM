@@ -73,6 +73,21 @@ function Dashboard() {
         console.log(outcomeHistory);
     }, [incomeHistory, outcomeHistory]);
 
+    const updateSetting = () => {
+    fetch('/api/settings', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ value: borderAmount }),
+    })
+    .then(response => response.text())
+    .then(data => console.log(data))
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+  };
+
     const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -204,7 +219,7 @@ function Dashboard() {
                                 <div className="form-group">
                                     <label><h2>Set Certain Amount:</h2></label>
                                     <input type="number" value={borderAmount} onChange={e => setBorderAmount(parseFloat(e.target.value))} className="form-control" />
-                                    <button onClick={() => setBorderAmount(borderAmount)} className="btn-add">Update</button>
+                                    <button onClick={updateSetting} className="btn-add">Update</button>
                                 </div>
                             </div>
                         </div>

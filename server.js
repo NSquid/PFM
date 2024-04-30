@@ -6,7 +6,6 @@ const path = require('path');
 const app = express();
 app.use(bodyParser.json());
 
-// Serve static files from the React app
 app.use(express.static(path.join(__dirname, './build')));
 
 const db = mysql.createConnection({
@@ -88,6 +87,28 @@ app.get('/api/finance/outcome', (req, res) => {
 
         res.json(results);
         console.log(results);
+    });
+});
+
+app.post('/api/settings', (req, res) => {
+    const newSettingValue = req.body.value;
+
+    db.query("DELETE FROM Settings WHERE id = 1", (err, results) => {
+        if (err) {
+            console.error(err.message);
+            res.status(500).send('Server error');
+            return;
+        }
+
+        db.query("INSERT INTO Settings (id, valueSett) VALUES (1, ?)", [newSettingValue], (err, results) => {
+            if (err) {
+                console.error(err.message);
+                res.status(500).send('Server error');
+                return;
+            }
+
+            res.status(200).send('Setting updated successfully');
+        });
     });
 });
 
